@@ -5,6 +5,7 @@ import Search from "./components/Search";
 import Results from "./components/Results";
 import Pagination from "./components/Pagination";
 import ErrorBoundary from "./components/ErrorBoundary";
+import logo from "../public/images/rick-and-morty-logo.png"
 
 interface State {
   searchTerm: string;
@@ -83,10 +84,7 @@ class App extends Component<Record<string, unknown>, State> {
       <ErrorBoundary>
         <div className="App">
           <div className="section-top">
-            <img
-              src='../public/images/rick-and-morty-logo.png'
-              alt="logo"
-            />
+            <img src={logo} alt="logo" />
             <Search
               onSearch={this.handleSearch}
               searchTerm={this.state.searchTerm}
