@@ -1,0 +1,18 @@
+.searchInput {
+  width: 700px;
+  padding: 14px;
+  color: white;
+  font-size: 16px;
+  background: none;
+  border: 1px solid #5baeb6;
+  margin: 30px;
+  border-radius: 40px;
+}
+
+.searchButton {
+  background-color: green;
+  border: 2px solid greenyellow;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
