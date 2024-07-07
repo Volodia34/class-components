@@ -84,7 +84,7 @@ class App extends Component<Record<string, unknown>, State> {
         <div className="App">
           <div className="section-top">
             <img
-              src={`${import.meta.env.BASE_URL}images/rick-and-morty-logo.png`}
+              src='../public/images/rick-and-morty-logo.png'
               alt="logo"
             />
             <Search
