@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import { fetchCharacters } from "./api/api";
 import Search from "./components/Search";
@@ -7,113 +7,82 @@ import Pagination from "./components/Pagination";
 import ErrorBoundary from "./components/ErrorBoundary";
 import logo from "../public/images/rick-and-morty-logo.png";
 
-interface State {
-  searchTerm: string;
-  results: Array<{
-    name: string;
-    status: string;
-    species: string;
-    image: string;
-  }>;
-  hasError: boolean;
-  noResults: boolean;
-  currentPage: number;
-  totalPages: number;
-  isLoading: boolean;
-  simulateError: boolean;
-}
+const App: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [results, setResults] = useState<
+    Array<{
+      name: string;
+      status: string;
+      species: string;
+      image: string;
+    }>
+  >([]);
+  const [noResults, setNoResults] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [simulateError, setSimulateError] = useState<boolean>(false);
 
-class App extends Component<Record<string, unknown>, State> {
-  constructor(props: Record<string, unknown>) {
-    super(props);
-    this.state = {
-      searchTerm: "",
-      results: [],
-      hasError: false,
-      noResults: false,
-      currentPage: 1,
-      totalPages: 1,
-      isLoading: false,
-      simulateError: false,
-    };
-  }
-
-  componentDidMount() {
-    const savedSearchTerm = localStorage.getItem("searchTerm") || "";
-    this.setState({ searchTerm: savedSearchTerm }, () => {
-      this.handleSearch(savedSearchTerm);
-    });
-  }
-
-  handleSearch = (searchTerm: string, page: number = 1) => {
-    this.setState({ isLoading: true, searchTerm });
-    const startTime = Date.now();
+  const handleSearch = useCallback((searchTerm: string, page: number = 1) => {
+    setIsLoading(true);
+    setSearchTerm(searchTerm);
 
     fetchCharacters(searchTerm.trim(), page).then((data) => {
-      const endTime = Date.now();
-      const elapsedTime = endTime - startTime;
-      const remainingTime = Math.max(0, 1000 - elapsedTime);
-
-      setTimeout(() => {
-        this.setState({
-          results: data.results,
-          noResults: data.results.length === 0,
-          currentPage: page,
-          totalPages: data.totalPages,
-          isLoading: false,
-        });
-      }, remainingTime);
+      setResults(data.results);
+      setNoResults(data.results.length === 0);
+      setCurrentPage(page);
+      setTotalPages(data.totalPages);
+      setIsLoading(false);
     });
+
     localStorage.setItem("searchTerm", searchTerm.trim());
+  }, []);
+
+  useEffect(() => {
+    const savedSearchTerm = localStorage.getItem("searchTerm") || "";
+    setSearchTerm(savedSearchTerm);
+    handleSearch(savedSearchTerm);
+  }, [handleSearch, searchTerm]);
+
+  const handlePageChange = (page: number) => {
+    handleSearch(searchTerm, page);
   };
 
-  handlePageChange = (page: number) => {
-    this.handleSearch(this.state.searchTerm, page);
+  const throwError = () => {
+    setSimulateError(true);
   };
 
-  throwError = () => {
-    this.setState({ simulateError: true });
-  };
-
-  render() {
-    if (this.state.simulateError) {
-      throw new Error("Test error");
-    }
-
-    return (
-      <ErrorBoundary>
-        <div className="App">
-          <div className="section-top">
-            <img src={logo} alt="logo" />
-            <Search
-              onSearch={this.handleSearch}
-              searchTerm={this.state.searchTerm}
-            />
-            <button className="errorBtn" onClick={this.throwError}>
-              Throw Error
-            </button>
-          </div>
-          <div className="section-bottom">
-            {this.state.isLoading ? (
-              <p className="loading">Loading...</p>
-            ) : (
-              <>
-                <Results
-                  results={this.state.results}
-                  noResults={this.state.noResults}
-                />
-                <Pagination
-                  currentPage={this.state.currentPage}
-                  totalPages={this.state.totalPages}
-                  onPageChange={this.handlePageChange}
-                />
-              </>
-            )}
-          </div>
-        </div>
-      </ErrorBoundary>
-    );
+  if (simulateError) {
+    throw new Error("Test error");
   }
-}
+
+  return (
+    <ErrorBoundary>
+      <div className="App">
+        <div className="section-top">
+          <img src={logo} alt="logo" />
+          <Search onSearch={handleSearch} searchTerm={searchTerm} />
+          <button className="errorBtn" onClick={throwError}>
+            Throw Error
+          </button>
+        </div>
+        <div className="section-bottom">
+          {isLoading ? (
+            <p className="loading">Loading...</p>
+          ) : (
+            <>
+              <Results results={results} noResults={noResults} />
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+              />
+            </>
+          )}
+        </div>
+      </div>
+    </ErrorBoundary>
+  );
+};
 
 export default App;

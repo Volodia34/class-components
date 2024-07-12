@@ -29,7 +29,7 @@ module.exports = {
     "react-compiler/react-compiler": "error",
     "react/prop-types": "error",
     "react/react-in-jsx-scope": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier":  ["error", { endOfLine: "lf" }]
   },
   settings: {
     react: {
