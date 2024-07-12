@@ -1,0 +1,36 @@
+body {
+  background: #11133e;
+}
+
+#root {
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  background: #11133e;
+}
+
+.app {
+  background-color: #1a1a1a;
+  margin: 0 auto;
+}
+
+.section-top {
+  margin: 30px;
+}
+
+.section-top img {
+  width: 400px;
+}
+
+.loading {
+  color: white;
+  font-size: 40px;
+}
+
+.errorBtn {
+  background-color: #535bf2;
+  border: 2px solid greenyellow;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+}
