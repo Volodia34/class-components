@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "./App.css";
 import { fetchCharacters } from "./api/api";
 import Search from "./components/Search";
 import Results from "./components/Results";
 import Pagination from "./components/Pagination";
-import ErrorBoundary from "./components/ErrorBoundary";
 import logo from "../public/images/rick-and-morty-logo.png";
 import useSearchTerm from "./hooks/useSearchTerm";
 
@@ -59,31 +58,29 @@ const App: React.FC = () => {
   }
 
   return (
-    <ErrorBoundary>
-      <div className="App">
-        <div className="section-top">
-          <img src={logo} alt="logo" />
-          <Search onSearch={handleSearch} searchTerm={searchTerm} />
-          <button className="errorBtn" onClick={throwError}>
-            Throw Error
-          </button>
-        </div>
-        <div className="section-bottom">
-          {isLoading ? (
-            <p className="loading">Loading...</p>
-          ) : (
-            <>
-              <Results results={results} noResults={noResults} />
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </>
-          )}
-        </div>
+    <div className="App">
+      <div className="section-top">
+        <img src={logo} alt="logo" />
+        <Search onSearch={handleSearch} searchTerm={searchTerm} />
+        <button className="errorBtn" onClick={throwError}>
+          Throw Error
+        </button>
       </div>
-    </ErrorBoundary>
+      <div className="section-bottom">
+        {isLoading ? (
+          <p className="loading">Loading...</p>
+        ) : (
+          <>
+            <Results results={results} noResults={noResults} />
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 
