@@ -5,7 +5,7 @@ import Search from "./components/Search";
 import Results from "./components/Results";
 import Pagination from "./components/Pagination";
 import ErrorBoundary from "./components/ErrorBoundary";
-import logo from "../public/images/rick-and-morty-logo.png"
+import logo from "../public/images/rick-and-morty-logo.png";
 
 interface State {
   searchTerm: string;

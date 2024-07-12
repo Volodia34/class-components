@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import style from "./Pagination.module.css";
 
 interface Props {
@@ -7,34 +7,35 @@ interface Props {
   onPageChange: (page: number) => void;
 }
 
-const Pagination: React.FC<Props> = ({
-  currentPage,
-  totalPages,
-  onPageChange,
-}) => {
-  const handlePrevious = () => {
+class Pagination extends Component<Props> {
+  handlePrevious = () => {
+    const { currentPage, onPageChange } = this.props;
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
     }
   };
 
-  const handleNext = () => {
+  handleNext = () => {
+    const { currentPage, totalPages, onPageChange } = this.props;
     if (currentPage < totalPages) {
       onPageChange(currentPage + 1);
     }
   };
 
-  return (
-    <div className={style.pagination}>
-      <button onClick={handlePrevious} disabled={currentPage === 1}>
-        Previous
-      </button>
-      <span>{`Page ${currentPage} of ${totalPages}`}</span>
-      <button onClick={handleNext} disabled={currentPage === totalPages}>
-        Next
-      </button>
-    </div>
-  );
-};
+  render() {
+    const { currentPage, totalPages } = this.props;
+    return (
+      <div className={style.pagination}>
+        <button onClick={this.handlePrevious} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <span>{`Page ${currentPage} of ${totalPages}`}</span>
+        <button onClick={this.handleNext} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
+    );
+  }
+}
 
 export default Pagination;
