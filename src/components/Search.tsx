@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { useState, useEffect } from "react";
 import style from "./Search.module.css";
 
 interface Props {
@@ -6,43 +6,38 @@ interface Props {
   searchTerm: string;
 }
 
-interface State {
-  searchTerm: string;
-}
+const Search: React.FC<Props> = ({
+  onSearch,
+  searchTerm: initialSearchTerm,
+}) => {
+  const [searchTerm, setSearchTerm] = useState<string>(initialSearchTerm);
 
-class Search extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      searchTerm: props.searchTerm,
-    };
-  }
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+  }, [initialSearchTerm]);
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: event.target.value });
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
 
-  handleSearch = () => {
-    const { searchTerm } = this.state;
+  const handleSearch = () => {
     const trimmedSearchTerm = searchTerm.trim();
-    this.props.onSearch(trimmedSearchTerm);
+    onSearch(trimmedSearchTerm);
   };
 
-  render() {
-    return (
-      <div>
-        <input
-          className={style.searchInput}
-          type="text"
-          value={this.state.searchTerm}
-          onChange={this.handleInputChange}
-        />
-        <button className={style.searchButton} onClick={this.handleSearch}>
-          Search
-        </button>
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <input
+        className={style.searchInput}
+        type="text"
+        value={searchTerm}
+        onChange={handleInputChange}
+      />
+      <button className={style.searchButton} onClick={handleSearch}>
+        Search
+      </button>
+    </div>
+  );
+};
 
 export default Search;
