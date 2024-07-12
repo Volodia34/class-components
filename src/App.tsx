@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "./App.css";
 import { fetchCharacters } from "./api/api";
 import Search from "./components/Search";
@@ -6,9 +6,10 @@ import Results from "./components/Results";
 import Pagination from "./components/Pagination";
 import ErrorBoundary from "./components/ErrorBoundary";
 import logo from "../public/images/rick-and-morty-logo.png";
+import useSearchTerm from "./hooks/useSearchTerm";
 
 const App: React.FC = () => {
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useSearchTerm();
   const [results, setResults] = useState<
     Array<{
       name: string;
@@ -23,25 +24,26 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [simulateError, setSimulateError] = useState<boolean>(false);
 
-  const handleSearch = useCallback((searchTerm: string, page: number = 1) => {
-    setIsLoading(true);
-    setSearchTerm(searchTerm);
+  const handleSearch = useCallback(
+    (searchTerm: string, page: number = 1) => {
+      setIsLoading(true);
+      setSearchTerm(searchTerm);
 
-    fetchCharacters(searchTerm.trim(), page).then((data) => {
-      setResults(data.results);
-      setNoResults(data.results.length === 0);
-      setCurrentPage(page);
-      setTotalPages(data.totalPages);
-      setIsLoading(false);
-    });
+      fetchCharacters(searchTerm.trim(), page).then((data) => {
+        setResults(data.results);
+        setNoResults(data.results.length === 0);
+        setCurrentPage(page);
+        setTotalPages(data.totalPages);
+        setIsLoading(false);
+      });
 
-    localStorage.setItem("searchTerm", searchTerm.trim());
-  }, []);
+      localStorage.setItem("searchTerm", searchTerm.trim());
+    },
+    [setSearchTerm],
+  );
 
   useEffect(() => {
-    const savedSearchTerm = localStorage.getItem("searchTerm") || "";
-    setSearchTerm(savedSearchTerm);
-    handleSearch(savedSearchTerm);
+    handleSearch(searchTerm);
   }, [handleSearch, searchTerm]);
 
   const handlePageChange = (page: number) => {
