@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { fetchCardDetails } from "../api/api";
+import { fetchCardDetails } from "../../api/api.tsx";
 import style from "./DetailedCard.module.css";
-import { Card } from "../types";
+import { Card } from "../../types.ts";
 
 const DetailedCard: React.FC = () => {
   const { cardId } = useParams<{ cardId: string }>();

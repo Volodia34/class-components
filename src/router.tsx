@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import NotFound from "./components/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
-import DetailedCard from "./components/DetailedCard.tsx";
+import DetailedCard from "./components/DetailedCard/DetailedCard.tsx";
 
 const router = createBrowserRouter([
   {

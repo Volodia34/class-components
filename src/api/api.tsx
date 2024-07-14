@@ -56,7 +56,7 @@ export const fetchCharacters = (
     })
     .then((data: ApiResponse) => {
       const results = data.results.map((character: ApiCharacter) => ({
-        id: character.id, // Ensure 'id' is included here
+        id: character.id,
         name: character.name,
         status: character.status,
         species: character.species,
@@ -68,10 +68,10 @@ export const fetchCharacters = (
 };
 
 export interface Card extends Character {
-  id: number; // Assuming ID is a number based on ApiCharacter
-  origin?: string; // Optional more simple origin from ApiCharacter's origin.name
-  location?: string; // Optional more simple location from ApiCharacter's location.name
-  gender?: string; // Optional
+  id: number;
+  origin?: string;
+  location?: string;
+  gender?: string;
 }
 
 export const fetchCardDetails = (id: number): Promise<Card> => {

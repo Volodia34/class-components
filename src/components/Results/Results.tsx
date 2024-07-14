@@ -1,6 +1,6 @@
 import React from "react";
 import style from "./Results.module.css";
-import { Card } from "../types";
+import { Card } from "../../types.ts";
 
 interface Props {
   results: Card[];

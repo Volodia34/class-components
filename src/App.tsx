@@ -3,9 +3,9 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
 import "./App.css";
 import { fetchCharacters } from "./api/api";
-import Search from "./components/Search";
-import Results from "./components/Results";
-import Pagination from "./components/Pagination";
+import Search from "./components/Search/Search.tsx";
+import Results from "./components/Results/Results.tsx";
+import Pagination from "./components/Pagination/Pagination.tsx";
 import logo from "../public/images/rick-and-morty-logo.png";
 import useSearchTerm from "./hooks/useSearchTerm";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -29,13 +29,22 @@ const App: React.FC = () => {
       setIsLoading(true);
       setSearchTerm(searchTerm);
 
-      fetchCharacters(searchTerm.trim(), page).then((data) => {
-        setResults(data.results);
-        setNoResults(data.results.length === 0);
-        setCurrentPage(page);
-        setTotalPages(data.totalPages);
-        setIsLoading(false);
-      });
+      const fetchPromise = fetchCharacters(searchTerm.trim(), page);
+      const timeoutPromise = new Promise((resolve) =>
+        setTimeout(resolve, 1000),
+      );
+
+      Promise.all([fetchPromise, timeoutPromise])
+        .then(([data]) => {
+          setResults(data.results);
+          setNoResults(data.results.length === 0);
+          setCurrentPage(page);
+          setTotalPages(data.totalPages);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setIsLoading(false);
+        });
 
       localStorage.setItem("searchTerm", searchTerm.trim());
     },
