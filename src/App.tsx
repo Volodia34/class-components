@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+// App.tsx
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation, Outlet, useParams } from "react-router-dom";
 import "./App.css";
 import { fetchCharacters } from "./api/api";
 import Search from "./components/Search";
@@ -6,22 +8,21 @@ import Results from "./components/Results";
 import Pagination from "./components/Pagination";
 import logo from "../public/images/rick-and-morty-logo.png";
 import useSearchTerm from "./hooks/useSearchTerm";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { Card } from "./types";
 
 const App: React.FC = () => {
   const [searchTerm, setSearchTerm] = useSearchTerm();
-  const [results, setResults] = useState<
-    Array<{
-      name: string;
-      status: string;
-      species: string;
-      image: string;
-    }>
-  >([]);
+  const [results, setResults] = useState<Card[]>([]);
   const [noResults, setNoResults] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [simulateError, setSimulateError] = useState<boolean>(false);
+  const { cardId } = useParams();
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSearch = useCallback(
     (searchTerm: string, page: number = 1) => {
@@ -42,11 +43,17 @@ const App: React.FC = () => {
   );
 
   useEffect(() => {
-    handleSearch(searchTerm);
-  }, [handleSearch, searchTerm]);
+    const searchParams = new URLSearchParams(location.search);
+    const page = parseInt(searchParams.get("page") || "1", 10);
+    handleSearch(searchTerm, page);
+  }, [handleSearch, searchTerm, location.search]);
 
   const handlePageChange = (page: number) => {
     handleSearch(searchTerm, page);
+  };
+
+  const handleCardClick = (card: Card) => {
+    navigate(`/details/${card.id}`);
   };
 
   const throwError = () => {
@@ -58,29 +65,42 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="App">
-      <div className="section-top">
-        <img src={logo} alt="logo" />
-        <Search onSearch={handleSearch} searchTerm={searchTerm} />
-        <button className="errorBtn" onClick={throwError}>
-          Throw Error
-        </button>
+    <ErrorBoundary>
+      <div className="App">
+        <div className="section-top">
+          <img src={logo} alt="logo" />
+          <Search onSearch={handleSearch} searchTerm={searchTerm} />
+          <button className="errorBtn" onClick={throwError}>
+            Throw Error
+          </button>
+        </div>
+        <div className="section-bottom">
+          {isLoading ? (
+            <p className="loading">Loading...</p>
+          ) : (
+            <div className="results-container">
+              <div className="left-section">
+                <Results
+                  results={results}
+                  noResults={noResults}
+                  onCardClick={handleCardClick}
+                />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </div>
+              {cardId && (
+                <div className="right-section">
+                  <Outlet />
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="section-bottom">
-        {isLoading ? (
-          <p className="loading">Loading...</p>
-        ) : (
-          <>
-            <Results results={results} noResults={noResults} />
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          </>
-        )}
-      </div>
-    </div>
+    </ErrorBoundary>
   );
 };
 

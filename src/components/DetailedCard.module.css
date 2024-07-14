@@ -1,0 +1,28 @@
+.detailedCard {
+    position: relative;
+    padding: 20px;
+    border: 2px solid greenyellow;
+    border-radius: 8px;
+    background-color: green;
+    max-width: 300px;
+}
+
+.closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.loading {
+    text-align: center;
+    font-size: 18px;
+}

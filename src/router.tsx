@@ -3,6 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App";
 import NotFound from "./components/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary.tsx";
+import DetailedCard from "./components/DetailedCard.tsx";
 
 const router = createBrowserRouter([
   {
@@ -12,6 +13,12 @@ const router = createBrowserRouter([
         <App />
       </ErrorBoundary>
     ),
+    children: [
+      {
+        path: "details/:cardId",
+        element: <DetailedCard />,
+      },
+    ],
   },
   {
     path: "*",

@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import style from "./Pagination.module.css";
 
 interface Props {
@@ -12,25 +13,29 @@ const Pagination: React.FC<Props> = ({
   totalPages,
   onPageChange,
 }) => {
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
-  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
+  const handlePageChange = (page: number) => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("page", page.toString());
+    navigate({ search: searchParams.toString() });
+    onPageChange(page);
   };
 
   return (
     <div className={style.pagination}>
-      <button onClick={handlePrevious} disabled={currentPage === 1}>
+      <button
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      >
         Previous
       </button>
       <span>{`Page ${currentPage} of ${totalPages}`}</span>
-      <button onClick={handleNext} disabled={currentPage === totalPages}>
+      <button
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      >
         Next
       </button>
     </div>

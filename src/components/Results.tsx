@@ -1,24 +1,25 @@
 import React from "react";
 import style from "./Results.module.css";
+import { Card } from "../types";
 
 interface Props {
-  results: Array<{
-    name: string;
-    status: string;
-    species: string;
-    image: string;
-  }>;
+  results: Card[];
   noResults: boolean;
+  onCardClick: (card: Card) => void;
 }
 
-const Results: React.FC<Props> = ({ results, noResults }) => {
+const Results: React.FC<Props> = ({ results, noResults, onCardClick }) => {
   return (
     <div className={style.results}>
       {noResults ? (
         <p className={style.noResult}>No characters found.</p>
       ) : (
         results.map((result, index) => (
-          <div className={style.card} key={index}>
+          <div
+            className={style.card}
+            key={index}
+            onClick={() => onCardClick(result)}
+          >
             <img src={result.image} alt={result.name} />
             <h3>{result.name}</h3>
             <p>Status: {result.status}</p>
